@@ -12,11 +12,6 @@ entity clock_builder is
 end entity;
 
 architecture clock_builder_ARCH of clock_builder is
-        component dff is
-        port(
-                CLK, D, resetD: IN STD_LOGIC;
-                Q: OUT STD_LOGIC
-        );
 end component;
         component counter163 is
         port(
@@ -32,11 +27,6 @@ end component;
         signal Is_Eleven: STD_LOGIC := '0';
         signal NIE : STD_LOGIC := '1'; -- NOT Is_Eleven
         
-        signal Dummy: STD_LOGIC; --to fill up useless signals
-		
-		signal D_val: STD_LOGIC; -- hack to avoid the 'not globally static' error.
-		signal FF_out: STD_LOGIC; --output for DD flip flop, sometimes used.
-		CLK_A := '0';
         begin
 
 			P2: counter163 port map(CLK=>CLK_i, CLR_L=>NIE, LD_L=>'1', ENP=>'1',ENT=>'1', D=>Count, Q=>new_Count, RCO=>Dummy);
@@ -44,24 +34,20 @@ end component;
 				process(new_Count)
 					begin
 						CLK_M <=  (NOT new_Count(0) AND NOT new_Count(1) AND NOT new_Count(2) AND NOT new_Count(3)) AND CLK_i;
-						Dummy <= (new_Count(3) AND new_Count(0) AND NOT new_Count(1) AND NOT new_Count(2)) OR
-												(new_Count(3) AND new_Count(1) AND NOT new_Count(0) AND NOT new_Count(2)) OR
-												(NOT new_Count(0) AND NOT new_Count(1) AND NOT new_Count(2) AND NOT new_Count(3));
-						--CLK_A <= CLK_i AND (new_Count(2) AND NOT new_Count(3) AND NOT new_Count(1) AND NOT new_Count(0));
-												
 						CLK_R1 <= CLK_i AND (new_Count(3) AND new_Count(0) AND NOT new_Count(1) AND NOT new_Count(2));
 						CLK_R2 <= CLK_i AND (new_Count(3) AND new_Count(1) AND NOT new_Count(0) AND NOT new_Count(2));
 						
-                        Is_Eleven <= new_count(3) AND new_count(1); --since this number is 0 indexed, the integral value of 11
+                        Is_Eleven <= new_count(3) AND new_count(1) AND NOT new_Count(0) AND NOT new_Count(2); --since this number is 0 indexed, the integral value of 11
 																	--corresponds to an index of 10, 1010 in binary.
-                        NIE <= NOT Is_Eleven;
+                        NIE <= NOT (new_count(3) AND new_count(1) AND NOT new_Count(0) AND NOT new_Count(2));
 				end process; 	
-				process(CLK_i)
+				process(CLK_i, new_Count)
 					begin
 						CLK_A <= CLK_i AND NOT ((new_Count(3) AND new_Count(0) AND NOT new_Count(1) AND NOT new_Count(2)) OR
 						(new_Count(3) AND new_Count(1) AND NOT new_Count(0) AND NOT new_Count(2)) OR
 						(new_Count(3) AND NOT new_Count(2) AND NOT new_Count(1) AND NOT new_Count(0)) OR
-						(NOT new_Count(0) AND NOT new_Count(1) AND NOT new_Count(2) AND NOT new_Count(3)));
+						(NOT new_Count(0) AND NOT new_Count(1) AND NOT new_Count(2) AND NOT new_Count(3)) OR
+						(new_Count(3) AND new_Count(0) AND new_Count(1) AND NOT new_Count(2)));
 				end process;
 					
 end clock_builder_ARCH; 
