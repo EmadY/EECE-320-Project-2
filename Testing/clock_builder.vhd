@@ -12,12 +12,6 @@ entity clock_builder is
 end entity;
 
 architecture clock_builder_ARCH of clock_builder is
-        component dff is
-        port(
-                CLK, D, resetD: IN STD_LOGIC;
-                Q: OUT STD_LOGIC
-        );
-end component;
         component counter163 is
         port(
                 CLK, CLR_L, LD_L, ENP, ENT: IN STD_LOGIC;
@@ -32,6 +26,8 @@ end component;
         signal Is_Eleven: STD_LOGIC := '0';
         signal NIE : STD_LOGIC := '1'; -- NOT Is_Eleven
         
+	signal Dummy: STD_LOGIC; --to hold uselss signals
+
         begin
 
 			P2: counter163 port map(CLK=>CLK_i, CLR_L=>NIE, LD_L=>'1', ENP=>'1',ENT=>'1', D=>Count, Q=>new_Count, RCO=>Dummy);
@@ -39,10 +35,6 @@ end component;
 				process(new_Count)
 					begin
 						CLK_M <=  (NOT new_Count(0) AND NOT new_Count(1) AND NOT new_Count(2) AND NOT new_Count(3)) AND CLK_i;
-						Dummy <= (new_Count(3) AND new_Count(0) AND NOT new_Count(1) AND NOT new_Count(2)) OR
-												(new_Count(3) AND new_Count(1) AND NOT new_Count(0) AND NOT new_Count(2)) OR
-												(NOT new_Count(0) AND NOT new_Count(1) AND NOT new_Count(2) AND NOT new_Count(3));
-												
 						CLK_R1 <= CLK_i AND (new_Count(3) AND new_Count(0) AND NOT new_Count(1) AND NOT new_Count(2));
 						CLK_R2 <= CLK_i AND (new_Count(3) AND new_Count(1) AND NOT new_Count(0) AND NOT new_Count(2));
 						
