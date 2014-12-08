@@ -4,7 +4,7 @@ entity sregister is
   port( CLK,input,shift,reset: in std_logic; output : out std_logic; pout : out std_logic_vector(7 downto 0));
   end entity;
   architecture sregister of sregister is
-  signal IQ: std_logic_vector (7 downto 0);
+  signal IQ: std_logic_vector (7 downto 0) := "00000000";
   begin
   process(CLK,IQ)
   begin

@@ -6,7 +6,7 @@ entity cbTB is
 end entity;
 
 architecture cbTBARCH of cbTB is
-        component clock_builder is
+component clock_builder is
         port(
 		CLK_i: IN STD_LOGIC;
 		CLK_M: OUT STD_LOGIC; -- the clock for the iterations
@@ -17,7 +17,7 @@ architecture cbTBARCH of cbTB is
 end component;
 	signal iCLK: STD_LOGIC := '1';
 	signal mCLK: STD_LOGIC;
-	signal aCLK: STD_LOGIC;
+	signal aCLK: STD_LOGIC;	
 	signal r1CLK: STD_LOGIC;
 	signal r2CLK: STD_LOGIC;
         begin
