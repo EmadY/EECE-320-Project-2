@@ -16,13 +16,13 @@ end component;
 	signal i_tb: STD_LOGIC_vector (15 downto 0):= "0000100000001000";
 	signal o_tb: STD_LOGIC_vector (7 downto 0);
 	signal c_i_tb,a_i_tb,b_i_tb,c_o_tb,s_o_tb :std_logic;
-	signal CLK_tb : std_logic;
-	
-	
-	
-	
+	signal CLK_tb : std_logic := '1';
+	signal load_tb:std_logic;
+
 	
         begin
             T: SA_VHDL port map(i_tb, o_tb,c_i_tb,a_i_tb,b_i_tb,c_o_tb,s_o_tb,CLK_tb,'1');
 			CLK_tb <= NOT CLK_tb after 10 ns;
+		
+				
 end seq_adder_tb_arch; 
