@@ -2,12 +2,11 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 
 entity weird_adder is port(
+		CLK: IN STD_LOGIC;
 		MI: IN STD_LOGIC_VECTOR(7 downto 0);
 		SI: IN STD_LOGIC_VECTOR(7 downto 0);
-		EI: IN STD_LOGIC;
 		O: OUT STD_LOGIC_VECTOR(7 downto 0);
-		CO: OUT STD_LOGIC;
-		EO: OUT STD_LOGIC
+		CO: OUT STD_LOGIC
 	);
 end weird_adder;
 
@@ -29,10 +28,16 @@ end component;
  end component;
 
 signal Enabled_SI: STD_LOGIC_VECTOR(7 downto 0);
+signal Enable: STD_LOGIC := '0';
 begin
 
-p1: enabled_buffer port map(SI, EI, Enabled_SI);
+process(CLK) begin
+if(CLK'event AND CLK = '1') then
+	Enable <= '1';
+end if;
+end process;
+
+p1: enabled_buffer port map(SI, Enable, Enabled_SI);
 p2: adder8bit port map(MI, Enabled_SI, '0', O, CO);
-EO <= '0';
 
 end weird_adder_arch;
